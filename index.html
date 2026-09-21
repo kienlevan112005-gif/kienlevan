@@ -3,21 +3,574 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Trang web của tôi</title>
+  <title>Kiên Sport – Đồ thể thao chạy bộ, bóng đá, cầu lông, gym</title>
+  <meta name="description" content="Giày, quần áo, vợt và dụng cụ tập luyện. Đặt hàng qua Zalo, giao tận nhà.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Be+Vietnam+Pro:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body { font-family: sans-serif; max-width: 700px; margin: 0 auto; padding: 1rem; line-height: 1.6; }
-    header { background: #2563eb; color: white; padding: 2rem; border-radius: 12px; text-align: center; }
-    a { color: #2563eb; }
+    :root {
+      --court: #1240c4;      /* xanh sân bóng rổ */
+      --court-dark: #0c2d8f;
+      --ink: #111827;
+      --paper: #f4f5f2;
+      --line: #d9dcd3;
+      --whistle: #ffc72c;    /* vàng còi trọng tài */
+      --muted: #566070;
+      --display: "Barlow Condensed", "Arial Narrow", Impact, sans-serif;
+      --body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: var(--body); font-size: 16px; line-height: 1.6;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: inherit; }
+    button, input, textarea { font: inherit; color: inherit; }
+    :focus-visible { outline: 3px solid var(--whistle); outline-offset: 2px; }
+    .wrap { width: min(1120px, 100% - 2rem); margin-inline: auto; }
+
+    /* ---------- Header ---------- */
+    .site-header {
+      position: sticky; top: 0; z-index: 20;
+      background: var(--court-dark); color: #fff;
+    }
+    .site-header .wrap {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      min-height: 64px;
+    }
+    .logo {
+      font-family: var(--display); font-weight: 800; font-size: 1.9rem;
+      letter-spacing: .01em; text-decoration: none; line-height: 1;
+    }
+    .logo span { color: var(--whistle); }
+    .nav { display: flex; align-items: center; gap: 1.5rem; }
+    .nav a { text-decoration: none; font-weight: 500; font-size: .95rem; }
+    .nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
+    .cart-btn {
+      display: inline-flex; align-items: center; gap: .6rem;
+      background: var(--whistle); color: var(--ink); border: 0; cursor: pointer;
+      padding: .5rem 1rem; border-radius: 999px; font-weight: 600;
+    }
+    .cart-count {
+      background: var(--ink); color: #fff; min-width: 1.5rem; height: 1.5rem;
+      display: inline-grid; place-items: center; border-radius: 999px;
+      font-size: .8rem; padding: 0 .35rem;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero {
+      position: relative; background: var(--court); color: #fff; overflow: hidden;
+      isolation: isolate;
+    }
+    .court {
+      position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1;
+      fill: none; stroke: #fff; stroke-width: 4; opacity: .38;
+    }
+    .hero .wrap { padding-block: clamp(3.5rem, 10vw, 7.5rem); }
+    .hero h1 {
+      font-family: var(--display); font-weight: 800;
+      font-size: clamp(3.4rem, 12vw, 8rem); line-height: 1; margin: 0 0 1.25rem;
+      letter-spacing: -.005em; max-width: 9ch;
+    }
+    .hero p { font-size: clamp(1.05rem, 2.2vw, 1.25rem); max-width: 34rem; margin: 0 0 2rem; }
+    .btn {
+      display: inline-block; text-decoration: none; cursor: pointer; border: 2px solid transparent;
+      padding: .8rem 1.5rem; border-radius: 999px; font-weight: 600; font-size: 1rem;
+    }
+    .btn-primary { background: var(--whistle); color: var(--ink); }
+    .btn-primary:hover { background: #ffd65c; }
+    .btn-ghost { border-color: #fff; color: #fff; background: transparent; }
+    .btn-ghost:hover { background: rgba(255,255,255,.14); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+
+    /* ---------- Products ---------- */
+    .shop { padding-block: 4rem 3rem; }
+    .shop h2, .perks h2, .contact h2 {
+      font-family: var(--display); font-weight: 700; font-size: clamp(2.2rem, 5vw, 3.2rem);
+      line-height: 1.05; margin: 0 0 1.5rem;
+    }
+    .tools { display: flex; flex-wrap: wrap; gap: .75rem 1.25rem; align-items: center; margin-bottom: 2rem; }
+    .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+    .chip {
+      border: 1.5px solid var(--ink); background: transparent; cursor: pointer;
+      padding: .35rem 1rem; border-radius: 999px; font-weight: 500; font-size: .95rem;
+    }
+    .chip[aria-pressed="true"] { background: var(--ink); color: #fff; }
+    .search {
+      margin-left: auto; min-width: min(100%, 260px); padding: .55rem 1rem;
+      border: 1.5px solid var(--line); border-radius: 999px; background: #fff;
+    }
+    .grid {
+      display: grid; gap: 1.25rem;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    }
+    .card { background: #fff; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; }
+    .thumb {
+      aspect-ratio: 4 / 3; display: grid; place-items: center; position: relative;
+      font-size: 4.5rem; line-height: 1;
+    }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .sale {
+      position: absolute; top: .6rem; left: .6rem; background: var(--ink); color: #fff;
+      font-size: .8rem; font-weight: 600; padding: .1rem .6rem; border-radius: 999px;
+      font-family: var(--body);
+    }
+    .info { padding: 1rem 1rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; flex: 1; }
+    .info h3 { margin: 0; font-size: 1.05rem; font-weight: 600; line-height: 1.35; }
+    .info .desc { margin: 0; color: var(--muted); font-size: .92rem; line-height: 1.5; }
+    .price-row { display: flex; align-items: baseline; gap: .6rem; margin-top: auto; padding-top: .6rem; }
+    .price { font-family: var(--display); font-weight: 700; font-size: 1.7rem; line-height: 1; }
+    .old { color: var(--muted); text-decoration: line-through; font-size: .9rem; }
+    .add {
+      margin-top: .7rem; width: 100%; background: var(--court); color: #fff; border: 0; cursor: pointer;
+      padding: .65rem 1rem; border-radius: 999px; font-weight: 600;
+    }
+    .add:hover { background: var(--court-dark); }
+    .add.done { background: #1c7c43; }
+    .empty { grid-column: 1 / -1; padding: 2rem 0; color: var(--muted); }
+
+    /* ---------- Perks ---------- */
+    .perks { padding-block: 2rem 4rem; }
+    .perk-list { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+    .perk { border-top: 4px solid var(--court); padding-top: 1rem; }
+    .perk h3 { margin: 0 0 .35rem; font-size: 1.15rem; }
+    .perk p { margin: 0; color: var(--muted); }
+
+    /* ---------- Contact / footer ---------- */
+    .contact { background: var(--ink); color: #fff; padding-block: 3.5rem 2rem; }
+    .contact h2 { color: #fff; }
+    .contact-grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .contact h3 { margin: 0 0 .4rem; font-size: 1rem; color: var(--whistle); }
+    .contact p { margin: 0; }
+    .contact a { color: #fff; }
+    .fine { margin-top: 2.5rem; padding-top: 1.25rem; border-top: 1px solid #364152; color: #aab2c0; font-size: .88rem; }
+
+    /* ---------- Cart drawer ---------- */
+    .overlay {
+      position: fixed; inset: 0; background: rgba(17,24,39,.55); z-index: 30;
+      opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s;
+    }
+    .overlay.open { opacity: 1; visibility: visible; }
+    .drawer {
+      position: fixed; top: 0; right: 0; bottom: 0; width: min(440px, 100%); z-index: 40;
+      background: #fff; display: flex; flex-direction: column;
+      transform: translateX(100%); visibility: hidden;
+      transition: transform .25s ease, visibility .25s;
+    }
+    .drawer.open { transform: none; visibility: visible; }
+    .drawer-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 1.25rem; border-bottom: 1px solid var(--line);
+    }
+    .drawer-head h2 { margin: 0; font-family: var(--display); font-size: 1.9rem; line-height: 1; }
+    .icon-btn { background: transparent; border: 0; font-size: 1.6rem; line-height: 1; cursor: pointer; padding: .25rem .5rem; border-radius: 6px; }
+    .drawer-body { overflow-y: auto; padding: 1rem 1.25rem; flex: 1; }
+    .line-item { display: grid; grid-template-columns: 1fr auto; gap: .25rem 1rem; padding-block: .8rem; border-bottom: 1px solid var(--line); }
+    .line-item h3 { margin: 0; font-size: .98rem; font-weight: 600; }
+    .line-item .sum { font-weight: 600; text-align: right; }
+    .qty { display: inline-flex; align-items: center; gap: .4rem; }
+    .qty button {
+      width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1.5px solid var(--ink);
+      background: #fff; cursor: pointer; font-size: 1.1rem; line-height: 1;
+    }
+    .remove { background: none; border: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: .88rem; justify-self: end; }
+    .total-row { display: flex; justify-content: space-between; align-items: baseline; margin: 1rem 0 .5rem; font-weight: 600; }
+    .total-row strong { font-family: var(--display); font-size: 2rem; line-height: 1; }
+    .form { display: grid; gap: .7rem; margin-top: 1rem; }
+    .form label { display: grid; gap: .2rem; font-size: .9rem; font-weight: 500; }
+    .form input, .form textarea {
+      border: 1.5px solid var(--line); border-radius: 8px; padding: .55rem .75rem; background: #fff; width: 100%;
+    }
+    .form textarea { resize: vertical; min-height: 4.2rem; }
+    .form .btn { width: 100%; text-align: center; }
+    .btn-zalo { background: #0068ff; color: #fff; }
+    .btn-zalo:hover { background: #0054d1; }
+    .btn-outline { border-color: var(--ink); background: #fff; color: var(--ink); }
+    .status { min-height: 1.4rem; font-size: .92rem; margin: 0; }
+    .status.err { color: #b3261e; }
+    .status.ok { color: #1c7c43; }
+    .hint { color: var(--muted); font-size: .88rem; margin: 0; }
+
+    @media (max-width: 640px) {
+      .nav .link { display: none; }
+      .search { margin-left: 0; width: 100%; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .drawer, .overlay { transition: none; }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Xin chào, tôi là Kiên</h1>
-    <p>Giới thiệu ngắn về bạn hoặc dự án</p>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="logo" href="#top" id="top-logo">Kiên<span>Sport</span></a>
+      <nav class="nav" aria-label="Điều hướng chính">
+        <a class="link" href="#san-pham">Sản phẩm</a>
+        <a class="link" href="#chinh-sach">Chính sách</a>
+        <a class="link" href="#lien-he">Liên hệ</a>
+        <button class="cart-btn" id="openCart" aria-haspopup="dialog">
+          Giỏ hàng <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </nav>
+    </div>
   </header>
-  <h2>Giới thiệu</h2>
-  <p>Viết vài dòng về bạn ở đây.</p>
-  <h2>Liên hệ</h2>
-  <p>Email: <a href="mailto:ban@example.com">ban@example.com</a></p>
+
+  <main id="top">
+    <section class="hero">
+      <!-- Vạch kẻ nửa sân bóng rổ làm nền -->
+      <svg class="court" viewBox="0 0 1200 600" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+        <rect x="480" y="30" width="700" height="540"/>
+        <rect x="880" y="200" width="300" height="200"/>
+        <circle cx="880" cy="300" r="100"/>
+        <path d="M1180 70 H947 A300 300 0 0 0 947 530 H1180"/>
+        <line x1="1160" y1="270" x2="1160" y2="330"/>
+        <circle cx="1140" cy="300" r="14"/>
+      </svg>
+      <div class="wrap">
+        <h1>Trang bị đủ, ra sân thôi.</h1>
+        <p>Giày, quần áo, vợt và dụng cụ tập luyện cho chạy bộ, bóng đá, cầu lông và phòng gym. Đặt hàng qua Zalo, giao tận nhà.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#san-pham">Xem sản phẩm</a>
+          <a class="btn btn-ghost" id="heroZalo" href="#" target="_blank" rel="noopener">Nhắn Zalo tư vấn</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="shop wrap" id="san-pham" aria-labelledby="shop-title">
+      <h2 id="shop-title">Sản phẩm</h2>
+      <div class="tools">
+        <div class="chips" id="chips" role="group" aria-label="Lọc theo môn"></div>
+        <input class="search" id="search" type="search" placeholder="Tìm sản phẩm, ví dụ: giày" aria-label="Tìm sản phẩm">
+      </div>
+      <div class="grid" id="grid" aria-live="polite"></div>
+    </section>
+
+    <section class="perks wrap" id="chinh-sach" aria-labelledby="perk-title">
+      <h2 id="perk-title">Mua hàng thế nào</h2>
+      <div class="perk-list">
+        <div class="perk">
+          <h3>Giao hàng toàn quốc</h3>
+          <p>Nội thành nhận trong ngày, các tỉnh khác mất 2 đến 4 ngày. Kiểm tra hàng trước khi thanh toán.</p>
+        </div>
+        <div class="perk">
+          <h3>Đổi size trong 7 ngày</h3>
+          <p>Áp dụng cho sản phẩm chưa qua sử dụng và còn nguyên tem mác.</p>
+        </div>
+        <div class="perk">
+          <h3>Tư vấn chọn size</h3>
+          <p>Nhắn Zalo cho cửa hàng, chúng tôi trả lời trong giờ mở cửa.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="contact" id="lien-he">
+    <div class="wrap">
+      <h2>Liên hệ</h2>
+      <div class="contact-grid">
+        <div><h3>Địa chỉ</h3><p id="fAddress"></p></div>
+        <div><h3>Giờ mở cửa</h3><p id="fHours"></p></div>
+        <div><h3>Điện thoại / Zalo</h3><p><a id="fPhone" href="#"></a></p></div>
+        <div><h3>Email</h3><p><a id="fEmail" href="#"></a></p></div>
+      </div>
+      <p class="fine">© <span id="year"></span> <span id="fName"></span>. Mã nguồn mở theo giấy phép MIT.</p>
+    </div>
+  </footer>
+
+  <!-- Giỏ hàng -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <h2 id="drawerTitle">Giỏ hàng</h2>
+      <button class="icon-btn" id="closeCart" aria-label="Đóng giỏ hàng">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div id="cartItems"></div>
+      <div id="checkout">
+        <div class="total-row"><span>Tổng cộng</span><strong id="cartTotal">0đ</strong></div>
+        <div class="form">
+          <label>Họ tên <input id="cName" autocomplete="name"></label>
+          <label>Số điện thoại <input id="cPhone" type="tel" autocomplete="tel"></label>
+          <label>Địa chỉ nhận hàng <textarea id="cAddress" autocomplete="street-address"></textarea></label>
+          <label>Ghi chú (size, màu...) <textarea id="cNote"></textarea></label>
+          <p class="status" id="status" role="status"></p>
+          <button class="btn btn-zalo" id="sendZalo" type="button">Sao chép đơn và mở Zalo</button>
+          <button class="btn btn-outline" id="sendMail" type="button">Gửi đơn qua email</button>
+          <p class="hint">Trang web chưa có thanh toán online. Đơn hàng được gửi cho cửa hàng qua Zalo hoặc email, cửa hàng sẽ xác nhận lại với bạn.</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    /* =========================================================
+       1) SỬA THÔNG TIN CỬA HÀNG Ở ĐÂY
+       ========================================================= */
+    const CONFIG = {
+      name: "Kiên Sport",
+      phone: "0900000000",          // số điện thoại (viết liền, không dấu cách)
+      zalo: "0900000000",           // số Zalo nhận đơn
+      email: "ban@example.com",
+      address: "Số 1, đường ABC, quận XYZ, Hà Nội",
+      hours: "8:00 – 21:00 mỗi ngày"
+    };
+
+    /* =========================================================
+       2) SỬA DANH SÁCH SẢN PHẨM Ở ĐÂY (đây là hàng mẫu)
+       - price: giá bán (số, đơn vị đồng)
+       - oldPrice: giá gốc, chỉ điền nếu đang giảm giá
+       - img: đường dẫn ảnh, ví dụ "anh/giay-chay.jpg".
+              Để trống thì trang dùng biểu tượng emoji.
+       ========================================================= */
+    const PRODUCTS = [
+      { id: "g1", name: "Giày chạy bộ Lightstride", cat: "Chạy bộ", price: 890000, emoji: "👟", img: "", desc: "Đế êm, thân giày thoáng khí, hợp quãng đường 5 đến 10 km." },
+      { id: "a1", name: "Áo chạy bộ thoáng khí", cat: "Chạy bộ", price: 219000, emoji: "👕", img: "", desc: "Vải nhẹ, nhanh khô, có dải phản quang khi chạy buổi tối." },
+      { id: "b1", name: "Giày đá bóng sân cỏ nhân tạo", cat: "Bóng đá", price: 650000, oldPrice: 790000, emoji: "👟", img: "", desc: "Đế đinh TF bám sân tốt, ôm chân, dễ chơi cả buổi." },
+      { id: "b2", name: "Bóng đá số 5", cat: "Bóng đá", price: 320000, emoji: "⚽", img: "", desc: "Da PU, đường may chắc, dùng được cho sân cỏ và sân cứng." },
+      { id: "b3", name: "Áo đấu bóng đá", cat: "Bóng đá", price: 180000, emoji: "👕", img: "", desc: "Vải co giãn, in tên và số theo yêu cầu (báo trong ghi chú)." },
+      { id: "c1", name: "Vợt cầu lông khung carbon", cat: "Cầu lông", price: 540000, emoji: "🏸", img: "", desc: "Nhẹ tay, cân bằng, đã căng sẵn dây, tặng kèm bao vợt." },
+      { id: "c2", name: "Ống cầu lông (12 quả)", cat: "Cầu lông", price: 250000, emoji: "🏸", img: "", desc: "Cánh lông vịt, bay ổn định, bền khi đánh phong trào." },
+      { id: "y1", name: "Thảm yoga 6 mm", cat: "Gym & Yoga", price: 290000, emoji: "🧘", img: "", desc: "Chống trượt hai mặt, kèm dây đeo để mang đi tập." },
+      { id: "y2", name: "Tạ tay 5 kg (1 đôi)", cat: "Gym & Yoga", price: 420000, emoji: "🏋️", img: "", desc: "Bọc cao su chống lăn, không làm xước sàn." },
+      { id: "p1", name: "Găng tay tập gym", cat: "Phụ kiện", price: 150000, emoji: "🧤", img: "", desc: "Đệm lòng bàn tay, có quấn cổ tay, thoáng khí." },
+      { id: "p2", name: "Bình nước thể thao 750 ml", cat: "Phụ kiện", price: 130000, emoji: "🥤", img: "", desc: "Nhựa an toàn thực phẩm, nắp bật một tay." },
+      { id: "p3", name: "Balo thể thao 25 L", cat: "Phụ kiện", price: 380000, emoji: "🎒", img: "", desc: "Có ngăn giày riêng và ngăn chống thấm cho đồ ướt." }
+    ];
+
+    const TINTS = {
+      "Chạy bộ": "#d9e4ff", "Bóng đá": "#dcefd9", "Cầu lông": "#fff0c2",
+      "Gym & Yoga": "#eadff5", "Phụ kiện": "#e6e7e0"
+    };
+
+    /* =========================================================
+       3) PHẦN CODE (thường không cần sửa)
+       ========================================================= */
+    const $ = (s) => document.querySelector(s);
+    const fmt = (n) => n.toLocaleString("vi-VN") + "đ";
+    const byId = Object.fromEntries(PRODUCTS.map((p) => [p.id, p]));
+
+    // --- Thông tin cửa hàng ---
+    document.title = CONFIG.name + " – Đồ thể thao chạy bộ, bóng đá, cầu lông, gym";
+    $("#fName").textContent = CONFIG.name;
+    $("#fAddress").textContent = CONFIG.address;
+    $("#fHours").textContent = CONFIG.hours;
+    $("#fPhone").textContent = CONFIG.phone;
+    $("#fPhone").href = "tel:" + CONFIG.phone;
+    $("#fEmail").textContent = CONFIG.email;
+    $("#fEmail").href = "mailto:" + CONFIG.email;
+    $("#heroZalo").href = "https://zalo.me/" + CONFIG.zalo;
+    $("#year").textContent = new Date().getFullYear();
+
+    // --- Giỏ hàng (lưu trong trình duyệt của khách) ---
+    let cart = {};
+    try {
+      const saved = JSON.parse(localStorage.getItem("cart") || "{}");
+      for (const id in saved) if (byId[id] && saved[id] > 0) cart[id] = Math.min(99, Math.floor(saved[id]));
+    } catch (e) { cart = {}; }
+
+    const saveCart = () => { try { localStorage.setItem("cart", JSON.stringify(cart)); } catch (e) {} };
+    const cartEntries = () => Object.keys(cart).map((id) => ({ p: byId[id], qty: cart[id] }));
+    const cartTotal = () => cartEntries().reduce((s, x) => s + x.p.price * x.qty, 0);
+    const cartQty = () => cartEntries().reduce((s, x) => s + x.qty, 0);
+
+    // --- Lọc và hiển thị sản phẩm ---
+    const cats = ["Tất cả", ...new Set(PRODUCTS.map((p) => p.cat))];
+    let activeCat = "Tất cả";
+    let query = "";
+
+    function renderChips() {
+      const box = $("#chips");
+      box.innerHTML = "";
+      cats.forEach((c) => {
+        const b = document.createElement("button");
+        b.className = "chip";
+        b.type = "button";
+        b.textContent = c;
+        b.setAttribute("aria-pressed", String(c === activeCat));
+        b.onclick = () => { activeCat = c; renderChips(); renderGrid(); };
+        box.appendChild(b);
+      });
+    }
+
+    function renderGrid() {
+      const grid = $("#grid");
+      grid.innerHTML = "";
+      const q = query.trim().toLowerCase();
+      const list = PRODUCTS.filter((p) =>
+        (activeCat === "Tất cả" || p.cat === activeCat) &&
+        (!q || (p.name + " " + p.desc + " " + p.cat).toLowerCase().includes(q))
+      );
+      if (!list.length) {
+        const d = document.createElement("p");
+        d.className = "empty";
+        d.textContent = "Không tìm thấy sản phẩm. Thử từ khóa khác hoặc chọn “Tất cả”.";
+        grid.appendChild(d);
+        return;
+      }
+      list.forEach((p) => {
+        const card = document.createElement("article");
+        card.className = "card";
+
+        const thumb = document.createElement("div");
+        thumb.className = "thumb";
+        thumb.style.background = TINTS[p.cat] || "#e6e7e0";
+        if (p.img) {
+          const im = document.createElement("img");
+          im.src = p.img; im.alt = p.name; im.loading = "lazy";
+          thumb.appendChild(im);
+        } else {
+          const em = document.createElement("span");
+          em.textContent = p.emoji; em.setAttribute("aria-hidden", "true");
+          thumb.appendChild(em);
+        }
+        if (p.oldPrice) {
+          const s = document.createElement("span");
+          s.className = "sale";
+          s.textContent = "Giảm " + Math.round((1 - p.price / p.oldPrice) * 100) + "%";
+          thumb.appendChild(s);
+        }
+
+        const info = document.createElement("div");
+        info.className = "info";
+        const h = document.createElement("h3"); h.textContent = p.name;
+        const d = document.createElement("p"); d.className = "desc"; d.textContent = p.desc;
+        const row = document.createElement("div"); row.className = "price-row";
+        const pr = document.createElement("span"); pr.className = "price"; pr.textContent = fmt(p.price);
+        row.appendChild(pr);
+        if (p.oldPrice) {
+          const o = document.createElement("span"); o.className = "old"; o.textContent = fmt(p.oldPrice);
+          row.appendChild(o);
+        }
+        const add = document.createElement("button");
+        add.className = "add"; add.type = "button"; add.textContent = "Thêm vào giỏ";
+        add.onclick = () => {
+          cart[p.id] = Math.min(99, (cart[p.id] || 0) + 1);
+          saveCart(); renderCart();
+          add.textContent = "Đã thêm"; add.classList.add("done");
+          setTimeout(() => { add.textContent = "Thêm vào giỏ"; add.classList.remove("done"); }, 1200);
+        };
+        info.append(h, d, row, add);
+        card.append(thumb, info);
+        grid.appendChild(card);
+      });
+    }
+
+    // --- Hiển thị giỏ hàng ---
+    function renderCart() {
+      $("#cartCount").textContent = cartQty();
+      const box = $("#cartItems");
+      box.innerHTML = "";
+      const items = cartEntries();
+      $("#checkout").hidden = items.length === 0;
+      if (!items.length) {
+        const e = document.createElement("p");
+        e.className = "empty";
+        e.textContent = "Giỏ hàng đang trống. Chọn sản phẩm rồi bấm “Thêm vào giỏ”.";
+        box.appendChild(e);
+        return;
+      }
+      items.forEach(({ p, qty }) => {
+        const li = document.createElement("div");
+        li.className = "line-item";
+        const name = document.createElement("h3"); name.textContent = p.name;
+        const sum = document.createElement("div"); sum.className = "sum"; sum.textContent = fmt(p.price * qty);
+
+        const q = document.createElement("div"); q.className = "qty";
+        const minus = document.createElement("button"); minus.type = "button"; minus.textContent = "−"; minus.setAttribute("aria-label", "Giảm số lượng " + p.name);
+        const num = document.createElement("span"); num.textContent = qty; num.setAttribute("aria-live", "polite");
+        const plus = document.createElement("button"); plus.type = "button"; plus.textContent = "+"; plus.setAttribute("aria-label", "Tăng số lượng " + p.name);
+        minus.onclick = () => { if (cart[p.id] > 1) cart[p.id]--; else delete cart[p.id]; saveCart(); renderCart(); };
+        plus.onclick = () => { cart[p.id] = Math.min(99, cart[p.id] + 1); saveCart(); renderCart(); };
+        q.append(minus, num, plus);
+
+        const rm = document.createElement("button"); rm.type = "button"; rm.className = "remove"; rm.textContent = "Xóa";
+        rm.onclick = () => { delete cart[p.id]; saveCart(); renderCart(); };
+
+        li.append(name, sum, q, rm);
+        box.appendChild(li);
+      });
+      $("#cartTotal").textContent = fmt(cartTotal());
+    }
+
+    // --- Mở / đóng giỏ hàng ---
+    const drawer = $("#drawer"), overlay = $("#overlay");
+    function openCart() {
+      drawer.classList.add("open"); overlay.classList.add("open");
+      $("#closeCart").focus();
+    }
+    function closeCart() {
+      drawer.classList.remove("open"); overlay.classList.remove("open");
+      $("#openCart").focus();
+    }
+    $("#openCart").onclick = openCart;
+    $("#closeCart").onclick = closeCart;
+    overlay.onclick = closeCart;
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && drawer.classList.contains("open")) closeCart(); });
+
+    // --- Tạo nội dung đơn hàng và gửi ---
+    function buildOrder() {
+      const name = $("#cName").value.trim();
+      const phone = $("#cPhone").value.trim();
+      const address = $("#cAddress").value.trim();
+      const note = $("#cNote").value.trim();
+      const status = $("#status");
+      status.className = "status";
+      if (!name || !phone || !address) {
+        status.className = "status err";
+        status.textContent = "Điền đủ họ tên, số điện thoại và địa chỉ để cửa hàng giao hàng cho bạn.";
+        return null;
+      }
+      if (!/^[0-9+\s.-]{9,15}$/.test(phone)) {
+        status.className = "status err";
+        status.textContent = "Số điện thoại chưa đúng. Hãy nhập lại, ví dụ 0912345678.";
+        return null;
+      }
+      const lines = cartEntries().map(({ p, qty }) => "- " + p.name + " x" + qty + " = " + fmt(p.price * qty));
+      return [
+        "ĐƠN HÀNG - " + CONFIG.name,
+        "Khách: " + name,
+        "SĐT: " + phone,
+        "Địa chỉ: " + address,
+        "",
+        ...lines,
+        "Tổng cộng: " + fmt(cartTotal()),
+        note ? "Ghi chú: " + note : ""
+      ].join("\n");
+    }
+
+    $("#sendZalo").onclick = async () => {
+      const text = buildOrder();
+      if (!text) return;
+      const status = $("#status");
+      try {
+        await navigator.clipboard.writeText(text);
+        status.className = "status ok";
+        status.textContent = "Đã sao chép đơn hàng. Trong Zalo, hãy dán (giữ vào ô chat, chọn Dán) rồi gửi.";
+      } catch (e) {
+        status.className = "status err";
+        status.textContent = "Không tự sao chép được. Hãy dùng nút gửi qua email, hoặc chụp màn hình giỏ hàng gửi qua Zalo.";
+      }
+      window.open("https://zalo.me/" + CONFIG.zalo, "_blank", "noopener");
+    };
+
+    $("#sendMail").onclick = () => {
+      const text = buildOrder();
+      if (!text) return;
+      location.href = "mailto:" + CONFIG.email +
+        "?subject=" + encodeURIComponent("Đơn hàng mới từ " + $("#cName").value.trim()) +
+        "&body=" + encodeURIComponent(text);
+    };
+
+    // --- Chạy lần đầu ---
+    $("#search").addEventListener("input", (e) => { query = e.target.value; renderGrid(); });
+    renderChips();
+    renderGrid();
+    renderCart();
+  </script>
 </body>
 </html>
